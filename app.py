@@ -9,7 +9,7 @@ from sqlalchemy import column
 from sqlalchemy.dialects import postgresql as pg
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
-from setup import USER, CATEGORY, EVENT,  EVENT, DURING, EVENT_CATEGORY, USER_CATEGORY, USER_INPUT, USER_SCHEDULE, GROUP
+from setup import USER, CATEGORY, EVENT,  EVENT, DURING, EVENT_CATEGORY, USER_CATEGORY, USER_SCHEDULE, CATEGORY_GROUP
 
 input_date_time_template = "%Y-%m-%d"
 
@@ -94,7 +94,7 @@ def create_event():
             now_num        = request.form.get('now_num')
             # ここは格納するべきなのか？
             category_title = request.form.get('category_title') 
-            group = GROUP()
+            group = CATEGORY_GROUP()
             group.GROUP_NAME = category_title
             db.session(group)
             db.session.commit()
@@ -122,7 +122,6 @@ def input_date():
             categories.append(request.form.get('now_category'))
         column_num = 10
         row_num    = request.form.get('row_num')
-        date_data  = []
         for i in range(row_num):
             now_date = datetime.strptime(request.form.get('date'),input_date_time_template)          
             for j in range(column_num):
