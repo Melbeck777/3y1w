@@ -54,7 +54,7 @@ class USER_CATEGORY(db.Model):
     CATEGORY_ID      = db.Column(db.Integer, nullable=False)    # foreign key
 
 class USER_SCHEDULE(db.Model):
-    USER_SCHEDULE_ID  = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
-    USER_ID  = db.Column(db.Integer,     nullable=False)    # foreign key
-    EVENT_ID = db.Column(db.Integer,     nullable=False)    # foreign key
-    SCHEDULE = db.Column(db.VarChar(10), nullable=False)
+    USER_SCHEDULE_ID = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
+    EVENT_ID         = db.Column(db.Integer,     nullable=False, primary_key=True)    # foreign key
+    USER_ID          = db.Column(db.Integer,     nullable=False)    # foreign key
+    SCHEDULE         = db.Column(db.VarChar(10), nullable=False)

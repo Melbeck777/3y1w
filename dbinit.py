@@ -49,12 +49,13 @@ cur.execute('create table USER_CATEGORY(\
 # SCHEDULEは2進数の文字列で表現する（例: '0011101111'）
 # 頭から順番にコマを割り当てる　（例: 1コマ: 0, 2コマ: 0, 3コマ: 1, ...）
 cur.execute('create table USER_SCHEDULE(\
-            USER_SCHEDULE_ID integer auto_increment not null primary key,\
-            USER_ID integer not null,\
+            USER_SCHEDULE_ID integer auto_increment not null,\
             EVENT_ID integer not null,\
+            USER_ID integer not null,\
             SCHEDULE varchar(10) not null,\
             foreign key (USER_ID) references USER(USER_ID),\
-            foreign key (EVENT_ID) references EVENT(EVENT_ID));')
+            foreign key (EVENT_ID) references EVENT(EVENT_ID),\
+            primary key (USER_SCHEDULE_ID, EVENT_ID));')
 
 conn.commit()
 
