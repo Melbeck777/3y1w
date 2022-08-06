@@ -10,15 +10,15 @@ cur.execute('create table USER(\
             PASSWORD varchar(128) not null,\
             EMAIL varchar(128));')
 
-cur.execute('create table GROUP(\
-            GROUP_ID integer auto_increment not null primary key,\
+cur.execute('create table CATEGORY_GROUP(\
+            CATEGORY_GROUP_ID integer auto_increment not null primary key,\
             GROUP_NAME varchar(64) not null);')
 
 cur.execute('create table CATEGORY(\
             CATEGORY_ID integer auto_increment not null primary key,\
             CATEGORY varchar(64) not null,\
-            GROUP_ID integer not null,\
-            foreign key (GROUP_ID) references GROUP(GROUP_ID));')
+            CATEGORY_GROUP_ID integer not null,\
+            foreign key (CATEGORY_GROUP_ID) references CATEGORY_GROUP(CATEGORY_GROUP_ID));')
 
 cur.execute('create table EVENT(\
             EVENT_ID integer auto_increment not null primary key,\
@@ -33,9 +33,9 @@ cur.execute('create table DURING(\
 cur.execute('create table EVENT_CATEGORY(\
             EVENT_CATEGORY_ID integer auto_increment not null primary key,\
             EVENT_ID integer not null,\
-            GROUP_ID integer not null,\
+            CATEGORY_GROUP_ID integer not null,\
             foreign key (EVENT_ID) references EVENT(EVENT_ID),\
-            foreign key (GROUP_ID) references GROUP(GROUP_ID));')
+            foreign key (CATEGORY_GROUP_ID) references CATEGORY_GROUP(CATEGORY_GROUP_ID));')
 
 cur.execute('create table USER_CATEGORY(\
             USER_CATEGORY_ID integer auto_increment not null primary key,\

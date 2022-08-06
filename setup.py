@@ -24,14 +24,14 @@ class USER(UserMixin, db.Model):
     USER_NAME = db.Column(db.VarChar(64))
     EMAIL     = db.Column(db.VarChar(128))
 
-class GROUP(db.Model):
-    GROUP_ID   = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
-    GROUP_NAME = db.Column(db.VarChar(64), nullable=False)
+class CATEGORY_GROUP(db.Model):
+    CATEGORY_GROUP_ID = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
+    GROUP_NAME        = db.Column(db.VarChar(64), nullable=False)
 
 class CATEGORY(db.Model):
-    CATEGORY_ID   = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
-    CATEGORY_NAME = db.Column(db.VarChar(64), nullable=False)
-    GROUP_ID      = db.Column(db.Integer,     nullable=False)    # foreign key
+    CATEGORY_ID       = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
+    CATEGORY_NAME     = db.Column(db.VarChar(64), nullable=False)
+    CATEGORY_GROUP_ID = db.Column(db.Integer,     nullable=False)    # foreign key
     
 class EVENT(db.Model):
     EVENT_ID   = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
@@ -45,7 +45,7 @@ class DURING(db.Model):
 class EVENT_CATEGORY(db.Model):
     EVENT_CATEGORY_ID = db.Column(db.Integer, nullable=False, primary_key=True, autoincrement=True)
     EVENT_ID          = db.Column(db.Integer, nullable=False)   # foreign key
-    GROUP_ID          = db.Column(db.Integer, nullable=False)   # foreign key
+    CATEGORY_GROUP_ID = db.Column(db.Integer, nullable=False)   # foreign key
     
 class USER_CATEGORY(db.Model):
     USER_CATEGORY_ID = db.Column(db.Integer, nullable=False, primary_key=True, autoincrement=True)
