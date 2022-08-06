@@ -9,6 +9,9 @@ from sqlalchemy import column
 from sqlalchemy.dialects import postgresql as pg
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
+from setup import USER, CATEGORY, EVENT,  EVENT, DURING, EVENT_CATEGORY, USER_CATEGORY, USER_INPUT, USER_SCHEDULE, GROUP
+
+input_date_time_template = "%Y-%m-%d"
 
 
 app = Flask(__name__)
@@ -22,41 +25,6 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-class USER(UserMixin, db.Model):
-    USER_ID   = db.Column(db.Integer, primary_key=True)
-    USER_NAME = db.Column(db.VarChar(56),nullable=False)
-    PASSWORD  = db.Column(db.VarChar(128))
-    EMAIL     = db.Column(db.VarChar(128))
-
-class CATEGORY():
-    CATEGORY_ID   = db.Column(db.Integer,    nullable=False, primary_key=True, autoincrement=True)
-    CATEGORY_NAME = db.Column(db.VarChar(64),nullable=False)
-    
-class EVENT(db.Model):
-    EVENT_ID   = db.Column(db.Integer,    nullable=False, autoincrement=True)
-    EVENT_NAME = db.Column(db.VarChar(64),nullable=False)
-
-class DURING(db.Model):
-    DURING_ID = db.Column(db.Integer,  nullable=False)
-    EVENT_ID  = db.Column(db.Integer,  nullable=False)
-    DATE      = db.Column(db.DateTime, nullable=False)
-
-class EVENT_CATEGORY(db.Model):
-    EVENT_CATEGORY_ID = db.Column(db.Integer, nullable=False)
-    EVENT_ID          = db.Column(db.Integer, nullable=False, autoincrement=True)
-    CATEGORY_ID       = db.Column(db.Integer, nullable=False)
-    
-class USER_CATEGORY(db.Model):
-    USER_CATEGORY_ID = db.Column(db.Integer, nullable=False, autoincrement=True)
-    USER_ID          = db.Column(db.Integer, nullable=False)
-    EVENT_ID         = db.Column(db.Integer, nullable=False)
-    CATEGORY_ID      = db.Column(db.Integer, nullable=False)
-
-class USER_INPUT(db.Model):
-    USER_ID       = db.Column(db.Integer,     primary_key=True)
-    EVENT_ID      = db.Column(db.Integer,     nullable=False, unique=True)
-    CATEGORY_ID   = db.Column(db.Integer,     nullable=False)
-    CATEGORY_NAME = db.Column(db.VarChar(64), nullable=False)
 
 # Verify user
 @app.route('/signup',methods=['GET','POST'])
@@ -94,13 +62,12 @@ def logout():
 # Create Event
 @app.route('/<event_name>',methods=['GET','POST'])
 def create_event():
-    input_date_time_template = "%Y-%m-%d"
     if request.method == "POST":
-        event = EVENT()
-        event_name   = request.form.get('event_name')
-        category_num = request.form.get('category_num') # 入力するカテゴリーの数
+        event            = EVENT()
+        event_name       = request.form.get('event_name')
+        category_num     = request.form.get('category_num') # 入力するカテゴリーの数
         event.EVENT_NAME = event_name
-        event_id = event.EVENT_ID
+        event_id         = event.EVENT_ID
         db.session.add(event)
         db.session.commit()
 
@@ -127,6 +94,10 @@ def create_event():
             now_num        = request.form.get('now_num')
             # ここは格納するべきなのか？
             category_title = request.form.get('category_title') 
+            group = GROUP()
+            group.GROUP_NAME = category_title
+            db.session(group)
+            db.session.commit()
             for j in range(now_num):
                 event                  = EVENT()
                 event.EVENT_NAME       = event_name
@@ -143,27 +114,40 @@ def create_event():
 @app.route('/input_date',methods=['GET','POST'])
 def input_date():
     if request.method == "POST":
+        user_id = request.form.get('user_id')
+        event_id = request.form.get('event_id')
         category_num = request.form.get('category_num')
         categories   = []
         for i in range(category_num):
             categories.append(request.form.get('now_category'))
-        column_num = request.form.get('column_num')
+        column_num = 10
         row_num    = request.form.get('row_num')
         date_data  = []
         for i in range(row_num):
-            now_date = []
+            now_date = datetime.strptime(request.form.get('date'),input_date_time_template)          
             for j in range(column_num):
-                now_date.append(request.form.get('your_input'))
-            date_data.append(now_date)
-        user_input               = USER_INPUT()
-        user_input.EVENT_NAME    = request.form.get('event_name')
-        user_input.my_categories = categories
-        user_input.my_dates      = date_data
-        db.session(user_input)
-        db.session.commit()
-        return redirect('/')
+                user_schedule = USER_SCHEDULE()
+                user_schedule.USER_SCHEDULE_ID = now_date.weekday()
+                user_schedule.EVENT_ID         = event_id
+                user_schedule.USER_ID          = user_id
+                user_schedule.SCHEDULE         = request.form.get("schedule")
+                db.add(user_schedule)
+                db.commit()
+        return redirect('/')               
 
-# @app.route('/',methods=['GET','POST'])
-# def check_date():
-#     if request.method == "POST":
-        
+@app.route('/',methods=['GET','POST'])
+def check_date(event_id,user_id):
+    durations = db.query(DURING).filter(DURING.EVENT_ID == event_id).all()
+    now = durations[0]
+    date_range = [[now,now.weekday()]]
+    auto_data = [user_id,event_id]
+    while now != durations[1]:
+        now += datetime.timedelta(days=1)
+        date_range.append([now,now.weekday()])
+    for it in date_range:
+        # 曜日 = SCHEDULE_ID
+        now_ans = db.query(USER_SCHEDULE).filter(USER_SCHEDULE.START_DATE >= it[0],
+                            USER_SCHEDULE.END_DATE <= it[0],
+                            USER_SCHEDULE.USER_SCHEDULE_ID == it[1]).all()
+        if(now_ans == None):
+            continue
