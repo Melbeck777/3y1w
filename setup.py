@@ -19,22 +19,22 @@ app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
 
 class USER(UserMixin, db.Model):
-    USER_ID   = db.Column(db.Integer,      nullable=False, primary_key=True, autoincrement=True)
+    USER_ID   = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
     PASSWORD  = db.Column(db.String(128), nullable=False)
     USER_NAME = db.Column(db.String(64))
     EMAIL     = db.Column(db.String(128))
 
 class CATEGORY_GROUP(db.Model):
-    CATEGORY_GROUP_ID = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
+    CATEGORY_GROUP_ID = db.Column(db.Integer,    nullable=False, primary_key=True, autoincrement=True)
     GROUP_NAME        = db.Column(db.String(64), nullable=False)
 
 class CATEGORY(db.Model):
-    CATEGORY_ID       = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
+    CATEGORY_ID       = db.Column(db.Integer,    nullable=False, primary_key=True, autoincrement=True)
     CATEGORY_NAME     = db.Column(db.String(64), nullable=False)
-    CATEGORY_GROUP_ID = db.Column(db.Integer,     nullable=False)    # foreign key
+    CATEGORY_GROUP_ID = db.Column(db.Integer,    nullable=False)    # foreign key
     
 class EVENT(db.Model):
-    EVENT_ID   = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
+    EVENT_ID   = db.Column(db.Integer,    nullable=False, primary_key=True, autoincrement=True)
     EVENT_NAME = db.Column(db.String(64), nullable=False)
 
 class DURING(db.Model):
@@ -54,7 +54,10 @@ class USER_CATEGORY(db.Model):
     CATEGORY_ID      = db.Column(db.Integer, nullable=False)    # foreign key
 
 class USER_SCHEDULE(db.Model):
-    USER_SCHEDULE_ID = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
-    EVENT_ID         = db.Column(db.Integer,     nullable=False, primary_key=True)    # foreign key
-    USER_ID          = db.Column(db.Integer,     nullable=False)    # foreign key
+    USER_SCHEDULE_ID = db.Column(db.Integer,    nullable=False, primary_key=True, autoincrement=True)
+    EVENT_ID         = db.Column(db.Integer,    nullable=False, primary_key=True)    # foreign key
+    USER_ID          = db.Column(db.Integer,    nullable=False)    # foreign key
     SCHEDULE         = db.Column(db.String(10), nullable=False)
+
+
+db.create_all()
