@@ -15,15 +15,15 @@
     <a href="/"><img src="static/images/logo.png" alt="logo" class="logo"></a>
 
   </div>
-  <form action="">
+  <form method="POST" action="">
     <h1>イベントの作成</h1>
     <p>イベント名</p>
     <div class="form-name">
-      <input type="text">
+      <input type="text" name="event_name">
     </div>
     <h1>対象期間</h1>
     <div class="form-date">
-      <input type="date">
+      <input type="date" name="date">
     </div>
     <button>追加</button>
     <div class="erea">
@@ -31,8 +31,8 @@
     </div>
     <div class="category">
       <h1>カテゴリー作成</h1>
-      <label for="">学年</label><input type="text" name="" id="">
-      <label for="">班</label><input type="text" name="" id="">
+      <label for="" type="text" name="category_title1" >学年</label><input type="text" name="category1" id="">
+      <label for="" type="text" name="category_title2" >班</label><input type="text"   name="category2" id="">
     </div>
     <input type="submit" value="作成" class="sub">
   </form>

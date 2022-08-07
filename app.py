@@ -33,7 +33,6 @@ login_manager.init_app(app)
 def load_user(user_id):
     return USER.query.get(int(user_id))
 
-# htmlに対応する箇所(ファイル名，内部変数名)
 # Verify user
 @app.route('/signup',methods=['GET','POST'])
 def signup():
@@ -41,6 +40,7 @@ def signup():
         # username = request.form.get('UserName')
         password = request.form.get('Password')
         email    = request.form.get('Email')
+        print("{}, {}".format(email,password))
         user     = USER(EMAIL=email, PASSWORD=password)
         db.session.add(user)
         db.session.commit()
@@ -48,7 +48,7 @@ def signup():
     else:
         return render_template('signup.html')
 
-# htmlに対応する箇所(ファイル名，内部変数名)
+
 @app.route('/login',methods=['GET','POST'])
 def login():
     if request.method == 'POST':
@@ -62,7 +62,6 @@ def login():
     else:
         return render_template('login.html')
 
-# htmlに対応する箇所(ファイル名，内部変数名)
 @app.route('/logout')
 @login_required
 def logout():
@@ -70,34 +69,39 @@ def logout():
     return redirect('/login')
 ##########################################
 
-# htmlに対応する箇所(ファイル名，内部変数名)
 # Create Event
 @app.route('/event',methods=['GET','POST'])
 def event():
     if request.method == 'POST':
-        event            = EVENT()
         event_name       = request.form.get('event_name')
-        category_num     = request.form.get('category_num') # 入力するカテゴリーの数
-        event.EVENT_NAME = event_name
-        event_id         = event.EVENT_ID
+        # category_num     = request.form.get('category_num') # 入力するカテゴリーの数
+        category_num     = 2
+        event            = EVENT(EVENT_NAME=event_name)
+        
         db.session.add(event)
         db.session.commit()
+        # db.flush()
+        event_id = event.EVENT_ID
+        print("event_name = {}\nevent_id {}".format(event_name, event.EVENT_ID))
 
         # 開始
-        start = DURING()
-        start.DURING_ID = 0
-        start.EVENT_ID  = event_id
-        start.DATE      = datetime.datetime.strptime(request.form.get('start_date'),input_date_time_template)
+        # start.DURING_ID = 0
+        start_date      = datetime.datetime.strptime(request.form.get('date'),input_date_time_template)
+        # start.DATE      = datetime.datetime.strptime(request.form.get('start_date'),input_date_time_template)
+        start = DURING(EVENT_ID=event_id, DATE=start_date)
+        
+        # print("{}, {}".format(start.DURING_ID, start.DATE))
+
         db.session.add(start)
         db.session.commit()
-
         # 終了
-        end = DURING()
-        end.DURING_ID = 1
-        end.EVENT_ID  = event_id
-        end.DATE      = datetime.datetime.strptime(request.form.get('end_date'),input_date_time_template)
-        db.session.add(end)
-        db.session.commit()
+        # end = DURING()
+        # # end.DURING_ID = 1
+        # # end.EVENT_ID  = event_id
+        # end.DATE      = datetime.datetime.strptime(request.form.get('end_date'),input_date_time_template)
+        # db.session.add(end)
+        # db.session.commit()
+        category_title = ["学年","班"]
 
         # カテゴリーのタイトルと中身を記録する
         # [カテゴリーのタイトル, [カテゴリー1,カテゴリー2,....]]
@@ -105,21 +109,20 @@ def event():
         for i in range(category_num):
             now_num        = request.form.get('now_num')
             # ここは格納するべきなのか？
-            category_title = request.form.get('category_title') 
-            group = CATEGORY_GROUP()
-            group.GROUP_NAME = category_title
-            db.session(group)
+            category_group = CATEGORY_GROUP()
+            category_group.GROUP_NAME = category_title[i]
+            db.session.add(category_group)
             db.session.commit()
-            for j in range(now_num):
-                event                  = EVENT()
-                event.EVENT_NAME       = event_name
-                event.EVENT_ID         = event_id
+            category_names = request.form.get('category{}'.format(i+1)).split(',')
+            print("category_names = {}".format(category_names))
+            category_group_id = category_group.CATEGORY_GROUP_ID
+            for category_name in category_names:
                 category               = CATEGORY()
-                category_name          = request.form.get('category_name')
                 category.CATEGORY_NAME = category_name
-                db.session(event)
+                category.CATEGORY_GROUP_ID = category_group_id
+                db.session.add(event)
                 db.session.commit()
-                db.session(category)
+                db.session.add(category)
                 db.session.commit()
         return redirect('/completion')
     else:
@@ -129,7 +132,6 @@ def event():
 def completion():
     return render_template('completion.html')
 
-# htmlに対応する箇所(ファイル名，内部変数名)
 # ユーザがデータを入力するときの関数
 @app.route('/<user_id>/<event_id>',methods=['GET','POST'])
 def input_date(user_id,event_id):
@@ -139,15 +141,15 @@ def input_date(user_id,event_id):
         category_num = request.form.get('category_num')
         categories   = []
         for i in range(category_num):
-            categories.append(request.form.get('now_category'))
+            categories.append(request.form.get('category_title'))
         column_num = 10
         row_num    = request.form.get('row_num')
         for i in range(row_num):
             now_date = datetime.strptime(request.form.get('date'),input_date_time_template)          
             user_schedule                  = USER_SCHEDULE()
             user_schedule.USER_SCHEDULE_ID = now_date.weekday()
-            user_schedule.EVENT_ID         = event_id
-            user_schedule.USER_ID          = user_id
+            # user_schedule.EVENT_ID         = event_id
+            # user_schedule.USER_ID          = user_id
             schedule_txt = ""
             for j in range(column_num):
                 schedule_txt += request.form.get("input")
@@ -174,6 +176,11 @@ def check_date(event_id,user_id):
                             USER_SCHEDULE.USER_SCHEDULE_ID == it[1]).all()
         if(now_ans == None):
             continue
+
+# @app.route('/<event_id>/result')
+# def result(event_id):
+    
+
 
 db.init_app(app)
 if __name__ == "__main__":
