@@ -1,0 +1,26 @@
+body{
+  .logo-surroundings{
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+  }
+  form{
+    .form-name{
+      input{
+        background-color: #fff;
+      }
+    }
+    .erea{
+      background-color: #fff;
+    }
+    .category{
+      input{
+        background-color: #fff;
+      }
+    }
+    .sub{
+      border: solid 1px #707070;
+      background-color: #fff;
+    }
+  }
+}
