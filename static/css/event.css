@@ -1,0 +1,18 @@
+body .logo-surroundings {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+body form .form-name input {
+  background-color: #fff;
+}
+body form .erea {
+  background-color: #fff;
+}
+body form .category input {
+  background-color: #fff;
+}
+body form .sub {
+  border: solid 1px #707070;
+  background-color: #fff;
+}/*# sourceMappingURL=event.css.map */
