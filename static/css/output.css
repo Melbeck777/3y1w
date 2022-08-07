@@ -1,0 +1,46 @@
+body .buttons {
+  width: 20%;
+  margin: auto;
+  display: flex;
+  justify-content: space-around;
+}
+body .buttons button {
+  font-size: 3vw;
+}
+body .buttons p {
+  margin: auto;
+}
+body h1 {
+  text-align: center;
+  color: #9A9A9A;
+}
+body h2 {
+  text-align: center;
+  color: #BFB9D6;
+}
+body .table-wrapp {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body .table-wrapp table tr th {
+  padding: 20px;
+  border: 1px solid #000;
+  font-size: 5vh;
+  text-align: center;
+  cursor: pointer;
+}
+body .narrowing-down {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: auto;
+  width: 20%;
+}
+body .narrowing-down button {
+  background-color: #F5C1C1;
+  color: #fff;
+  height: 100%;
+  padding: 10px;
+}/*# sourceMappingURL=output.css.map */
