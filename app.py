@@ -10,48 +10,59 @@ from sqlalchemy.dialects import postgresql as pg
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from setup import USER, CATEGORY, EVENT,  EVENT, DURING, EVENT_CATEGORY, USER_CATEGORY, USER_SCHEDULE, CATEGORY_GROUP
-
+from setup import db
+import subprocess
 input_date_time_template = "%Y-%m-%d"
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://3y1w.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///3y1w.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = os.urandom(24)
 
-db = SQLAlchemy(app)
+# db = SQLAlchemy(app)
+
+# subprocess.run("py ./setup.py")
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 
 
+@login_manager.user_loader
+def load_user(user_id):
+    return USER.query.get(int(user_id))
+
+# htmlに対応する箇所(ファイル名，内部変数名)
 # Verify user
 @app.route('/signup',methods=['GET','POST'])
 def signup():
-    if request.method == "POST":
-        username = request.form.get('UserName')
+    if request.method == 'POST':
+        # username = request.form.get('UserName')
         password = request.form.get('Password')
-        user     = USER(USER_NAME=username, PASSWORD=password)
+        email    = request.form.get('Email')
+        user     = USER(EMAIL=email, PASSWORD=password)
         db.session.add(user)
         db.session.commit()
         return redirect('/login')
     else:
         return render_template('signup.html')
 
+# htmlに対応する箇所(ファイル名，内部変数名)
 @app.route('/login',methods=['GET','POST'])
 def login():
-    if request.method == "POST":
-        username = request.form.get('UserName')
+    if request.method == 'POST':
+        # username = request.form.get('UserName')
+        email    = request.form.get('Email')
         password = request.form.get('Password')
-        user     = USER.query.filter_by(USER_NAME=username).first()
+        user     = USER.query.filter_by(EMAIL=email).first()
         if check_password_hash(user.PASSWORD,password):
             login_user(user)
-            return redirect('/')
-        else:
-            return render_template('login.html')
+            return redirect('/event')
+    else:
+        return render_template('login.html')
 
-
+# htmlに対応する箇所(ファイル名，内部変数名)
 @app.route('/logout')
 @login_required
 def logout():
@@ -59,10 +70,11 @@ def logout():
     return redirect('/login')
 ##########################################
 
+# htmlに対応する箇所(ファイル名，内部変数名)
 # Create Event
-@app.route('/<event_name>',methods=['GET','POST'])
-def create_event():
-    if request.method == "POST":
+@app.route('/event',methods=['GET','POST'])
+def event():
+    if request.method == 'POST':
         event            = EVENT()
         event_name       = request.form.get('event_name')
         category_num     = request.form.get('category_num') # 入力するカテゴリーの数
@@ -109,13 +121,21 @@ def create_event():
                 db.session.commit()
                 db.session(category)
                 db.session.commit()
-        return redirect('/')
+        return redirect('/completion')
+    else:
+        return render_template('event.html')
 
-@app.route('/input_date',methods=['GET','POST'])
-def input_date():
-    if request.method == "POST":
-        user_id = request.form.get('user_id')
-        event_id = request.form.get('event_id')
+@app.route('/completion')
+def completion():
+    return render_template('completion.html')
+
+# htmlに対応する箇所(ファイル名，内部変数名)
+# ユーザがデータを入力するときの関数
+@app.route('/<user_id>/<event_id>',methods=['GET','POST'])
+def input_date(user_id,event_id):
+    if request.method == 'POST':
+        # user_id = request.form.get('user_id')
+        # event_id = request.form.get('event_id')
         category_num = request.form.get('category_num')
         categories   = []
         for i in range(category_num):
@@ -124,17 +144,21 @@ def input_date():
         row_num    = request.form.get('row_num')
         for i in range(row_num):
             now_date = datetime.strptime(request.form.get('date'),input_date_time_template)          
+            user_schedule                  = USER_SCHEDULE()
+            user_schedule.USER_SCHEDULE_ID = now_date.weekday()
+            user_schedule.EVENT_ID         = event_id
+            user_schedule.USER_ID          = user_id
+            schedule_txt = ""
             for j in range(column_num):
-                user_schedule = USER_SCHEDULE()
-                user_schedule.USER_SCHEDULE_ID = now_date.weekday()
-                user_schedule.EVENT_ID         = event_id
-                user_schedule.USER_ID          = user_id
-                user_schedule.SCHEDULE         = request.form.get("schedule")
-                db.add(user_schedule)
-                db.commit()
+                schedule_txt += request.form.get("input")
+            user_schedule.SCHEDULE = schedule_txt
+            db.add(user_schedule)
+            db.commit()
         return redirect('/')               
 
-@app.route('/',methods=['GET','POST'])
+# htmlに対応する箇所(ファイル名，内部変数名)
+# 予定の自動入力関数
+@app.route('/<user_id>/<event_id>',methods=['GET','POST'])
 def check_date(event_id,user_id):
     durations = db.query(DURING).filter(DURING.EVENT_ID == event_id).all()
     now = durations[0]
@@ -150,3 +174,7 @@ def check_date(event_id,user_id):
                             USER_SCHEDULE.USER_SCHEDULE_ID == it[1]).all()
         if(now_ans == None):
             continue
+
+db.init_app(app)
+if __name__ == "__main__":
+    app.run(debug=True)
