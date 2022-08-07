@@ -1,0 +1,55 @@
+body {
+  background-color: #F9F9F9;
+}
+body .logo-surroundings {
+  margin-top: 16vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 7vh;
+}
+body .form-wrapp {
+  width: 100%;
+}
+body .form-wrapp form {
+  margin: auto;
+  width: 50%;
+}
+body .form-wrapp form h2 {
+  text-align: center;
+  color: #A1A1A1;
+  font-size: 4vh;
+}
+body .form-wrapp form .inputs {
+  width: 50%;
+  margin: auto;
+}
+body .form-wrapp form .inputs .login-wrapper {
+  width: 80%;
+  height: 4vh;
+  margin: auto;
+}
+body .form-wrapp form .inputs .login-wrapper input {
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+  border: #707070;
+  border: 1px solid #707070;
+}
+body .form-wrapp form .inputs .login-wrapper input::placeholder {
+  color: #C7C3C3;
+}
+body .form-wrapp form .inputs .login-submit {
+  width: 80%;
+  margin: auto;
+  background-color: #F9F9F9;
+}
+body .form-wrapp form .inputs .login-submit button {
+  background-color: #F9F9F9;
+  width: 100%;
+  height: 4vh;
+  font-size: 1.5vh;
+  color: #707070;
+  border: 1px solid #707070;
+  text-align: center;
+}/*# sourceMappingURL=login.css.map */
