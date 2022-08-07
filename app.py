@@ -33,6 +33,10 @@ login_manager.init_app(app)
 def load_user(user_id):
     return USER.query.get(int(user_id))
 
+@app.route('/')
+def first():
+    return redirect('/signup')
+
 # Verify user
 @app.route('/signup',methods=['GET','POST'])
 def signup():
@@ -55,10 +59,14 @@ def login():
         # username = request.form.get('UserName')
         email    = request.form.get('Email')
         password = request.form.get('Password')
+        print("{},{}".format(email,password))
         user     = USER.query.filter_by(EMAIL=email).first()
-        if check_password_hash(user.PASSWORD,password):
-            login_user(user)
+        print(user.PASSWORD)
+        if user.PASSWORD == password:
+            # login_user(user)
             return redirect('/event')
+        else:
+            return redirect('/login')
     else:
         return render_template('login.html')
 
@@ -135,29 +143,35 @@ def completion(event_id):
 # ユーザがデータを入力するときの関数
 @app.route('/<event_id>/schedule',methods=['GET','POST'])
 def input_date(event_id):
+    # if request.method == 'POST':
+        # # user_id = request.form.get('user_id')
+        # # event_id = request.form.get('event_id')
+        # category_num = request.form.get('category_num')
+        # categories   = []
+        # for i in range(category_num):
+        #     categories.append(request.form.get('category_title'))
+        # column_num = 10
+        # row_num    = request.form.get('row_num')
+        # for i in range(row_num):
+        #     now_date = datetime.strptime(request.form.get('date'),input_date_time_template)          
+        #     user_schedule                  = USER_SCHEDULE()
+        #     user_schedule.USER_SCHEDULE_ID = now_date.weekday()
+        #     # user_schedule.EVENT_ID         = event_id
+        #     # user_schedule.USER_ID          = user_id
+        #     schedule_txt = ""
+        #     for j in range(column_num):
+        #         schedule_txt += request.form.get("input")
+        #     user_schedule.SCHEDULE = schedule_txt
+        #     db.add(user_schedule)
+        #     db.commit()
     if request.method == 'POST':
-        # user_id = request.form.get('user_id')
-        # event_id = request.form.get('event_id')
-        category_num = request.form.get('category_num')
-        categories   = []
-        for i in range(category_num):
-            categories.append(request.form.get('category_title'))
-        column_num = 10
-        row_num    = request.form.get('row_num')
-        for i in range(row_num):
-            now_date = datetime.strptime(request.form.get('date'),input_date_time_template)          
-            user_schedule                  = USER_SCHEDULE()
-            user_schedule.USER_SCHEDULE_ID = now_date.weekday()
-            # user_schedule.EVENT_ID         = event_id
-            # user_schedule.USER_ID          = user_id
-            schedule_txt = ""
-            for j in range(column_num):
-                schedule_txt += request.form.get("input")
-            user_schedule.SCHEDULE = schedule_txt
-            db.add(user_schedule)
-            db.commit()
-        return redirect('/')
+        return render_template('output.html')    
+    else:
+        return render_template('schedule.html')
 
+@app.route('/output/<event_id>')
+def output():
+    return render_template('output.html')
 
 # htmlに対応する箇所(ファイル名，内部変数名)
 # 予定の自動入力関数
