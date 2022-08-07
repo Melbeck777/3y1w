@@ -20,22 +20,22 @@ db = SQLAlchemy(app)
 
 class USER(UserMixin, db.Model):
     USER_ID   = db.Column(db.Integer,      nullable=False, primary_key=True, autoincrement=True)
-    PASSWORD  = db.Column(db.VarChar(128), nullable=False)
-    USER_NAME = db.Column(db.VarChar(64))
-    EMAIL     = db.Column(db.VarChar(128))
+    PASSWORD  = db.Column(db.String(128), nullable=False)
+    USER_NAME = db.Column(db.String(64))
+    EMAIL     = db.Column(db.String(128))
 
 class CATEGORY_GROUP(db.Model):
     CATEGORY_GROUP_ID = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
-    GROUP_NAME        = db.Column(db.VarChar(64), nullable=False)
+    GROUP_NAME        = db.Column(db.String(64), nullable=False)
 
 class CATEGORY(db.Model):
     CATEGORY_ID       = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
-    CATEGORY_NAME     = db.Column(db.VarChar(64), nullable=False)
+    CATEGORY_NAME     = db.Column(db.String(64), nullable=False)
     CATEGORY_GROUP_ID = db.Column(db.Integer,     nullable=False)    # foreign key
     
 class EVENT(db.Model):
     EVENT_ID   = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
-    EVENT_NAME = db.Column(db.VarChar(64), nullable=False)
+    EVENT_NAME = db.Column(db.String(64), nullable=False)
 
 class DURING(db.Model):
     DURING_ID = db.Column(db.Integer,  nullable=False, primary_key=True, autoincrement=True)
@@ -57,4 +57,4 @@ class USER_SCHEDULE(db.Model):
     USER_SCHEDULE_ID = db.Column(db.Integer,     nullable=False, primary_key=True, autoincrement=True)
     EVENT_ID         = db.Column(db.Integer,     nullable=False, primary_key=True)    # foreign key
     USER_ID          = db.Column(db.Integer,     nullable=False)    # foreign key
-    SCHEDULE         = db.Column(db.VarChar(10), nullable=False)
+    SCHEDULE         = db.Column(db.String(10), nullable=False)
