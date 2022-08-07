@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/riset.css">
+  <link rel="stylesheet" href="/static/css/common.css">
+  <link rel="stylesheet" href="/static/css/header.css">
+  <link rel="stylesheet" href="/static/css/schedule.css">
+</head>
+<body>
+  <div class="logo-surroundings">
+    <a href="/"><img src="static/images/logo.png" alt="logo" class="logo"></a>
+
+  </div>
+  <div class="buttons">
+    <p>クリックで切り替え→</p>
+    <button onclick="circular()">〇</button>
+    <button onclick="xMark()">×</button>
+  </div>
+  <div class="table-wrapp">
+    <table>
+      <tr>
+        <th>　</th>
+        <th>7/1</th>
+        <th>7/2</th>
+        <th>7/3</th>
+        <th>7/4</th>
+      </tr>
+      <tr>
+        <th>1</th>
+        <th data-num="7/1-1" class="judg">〇</th>
+        <th data-num="7/2-1" class="judg">〇</th>
+        <th data-num="7/3-1" class="judg">〇</th>
+        <th data-num="7/4-1" class="judg">〇</th>
+      </tr>
+      <tr>
+        <th>2</th>
+        <th data-num="7/1-1" class="judg">〇</th>
+        <th data-num="7/2-1" class="judg">〇</th>
+        <th data-num="7/3-1" class="judg">〇</th>
+        <th data-num="7/4-1" class="judg">〇</th>
+      </tr>
+      <tr>
+        <th>3</th>
+        <th data-num="7/1-1" class="judg">〇</th>
+        <th data-num="7/2-1" class="judg">〇</th>
+        <th data-num="7/3-1" class="judg">〇</th>
+        <th data-num="7/4-1" class="judg">〇</th>
+      </tr>
+      <tr>
+        <th>4</th>
+        <th data-num="7/1-1" class="judg">〇</th>
+        <th data-num="7/2-1" class="judg">〇</th>
+        <th data-num="7/3-1" class="judg">〇</th>
+        <th data-num="7/4-1" class="judg">〇</th>
+      </tr>
+      <tr>
+        <th>5</th>
+        <th data-num="7/1-1" class="judg">〇</th>
+        <th data-num="7/2-1" class="judg">〇</th>
+        <th data-num="7/3-1" class="judg">〇</th>
+        <th data-num="7/4-1" class="judg">〇</th>
+      </tr>
+      <tr>
+        <th>6</th>
+        <th data-num="7/1-1" class="judg">〇</th>
+        <th data-num="7/2-1" class="judg">〇</th>
+        <th data-num="7/3-1" class="judg">〇</th>
+        <th data-num="7/4-1" class="judg">〇</th>
+      </tr>
+      <tr>
+        <th>7</th>
+        <th data-num="7/1-1" class="judg">〇</th>
+        <th data-num="7/2-1" class="judg">〇</th>
+        <th data-num="7/3-1" class="judg">〇</th>
+        <th data-num="7/4-1" class="judg">〇</th>
+      </tr>
+      <tr>
+        <th>8</th>
+        <th data-num="7/1-1" class="judg">〇</th>
+        <th data-num="7/2-1" class="judg">〇</th>
+        <th data-num="7/3-1" class="judg">〇</th>
+        <th data-num="7/4-1" class="judg">〇</th>
+      </tr>
+      <tr>
+        <th>9</th>
+        <th data-num="7/1-1" class="judg">〇</th>
+        <th data-num="7/2-1" class="judg">〇</th>
+        <th data-num="7/3-1" class="judg">〇</th>
+        <th data-num="7/4-1" class="judg">〇</th>
+      </tr>
+      <tr>
+        <th>10</th>
+        <th data-num="7/1-1" class="judg">〇</th>
+        <th data-num="7/2-1" class="judg">〇</th>
+        <th data-num="7/3-1" class="judg">〇</th>
+        <th data-num="7/4-1" class="judg">〇</th>
+      </tr>
+
+
+    </table>
+  </div>
+  <script>
+    var mode = "〇";
+    function circular() {
+      mode = "〇"
+    }
+    function xMark() {
+      mode = "×"
+    }
+    document.querySelectorAll('.judg').forEach(function (cards) {
+      cards.addEventListener('click', function () {
+        cards.textContent = mode
+      });
+    });
+  </script>
+</body>
+</html>

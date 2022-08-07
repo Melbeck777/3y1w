@@ -1,0 +1,25 @@
+body .buttons {
+  width: 20%;
+  margin: auto;
+  display: flex;
+  justify-content: space-around;
+}
+body .buttons button {
+  font-size: 3vw;
+}
+body .buttons p {
+  margin: auto;
+}
+body .table-wrapp {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body .table-wrapp table tr th {
+  padding: 20px;
+  border: 1px solid #000;
+  font-size: 5vh;
+  text-align: center;
+  cursor: pointer;
+}/*# sourceMappingURL=entry.css.map */
