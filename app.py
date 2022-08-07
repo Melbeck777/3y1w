@@ -124,17 +124,17 @@ def event():
                 db.session.commit()
                 db.session.add(category)
                 db.session.commit()
-        return redirect('/completion')
+        return render_template('completion.html',event_id=event_id)
     else:
         return render_template('event.html')
 
 @app.route('/completion')
-def completion():
-    return render_template('completion.html')
+def completion(event_id):
+    return render_template('completion.html',event_id=event_id)
 
 # ユーザがデータを入力するときの関数
-@app.route('/<user_id>/<event_id>',methods=['GET','POST'])
-def input_date(user_id,event_id):
+@app.route('/<event_id>/schedule',methods=['GET','POST'])
+def input_date(event_id):
     if request.method == 'POST':
         # user_id = request.form.get('user_id')
         # event_id = request.form.get('event_id')
@@ -156,7 +156,8 @@ def input_date(user_id,event_id):
             user_schedule.SCHEDULE = schedule_txt
             db.add(user_schedule)
             db.commit()
-        return redirect('/')               
+        return redirect('/')
+
 
 # htmlに対応する箇所(ファイル名，内部変数名)
 # 予定の自動入力関数
